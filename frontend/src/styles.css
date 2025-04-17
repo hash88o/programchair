@@ -1,6 +1,3 @@
-/* Import fonts */
-@import "./assets/styles/_fonts.scss";
-
 /* Global Styles */
 :root {
   --primary-color: #17a2b8;
@@ -8,8 +5,9 @@
   --light-color: #f4f4f4;
   --danger-color: #dc3545;
   --success-color: #28a745;
-  --font-family-base: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  /* Use system fonts */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 * {
