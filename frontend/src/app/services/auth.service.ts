@@ -34,19 +34,24 @@ export class AuthService {
   }
 
   register(user: any): Observable<any> {
+    console.log('Attempting registration with:', { ...user, password: '***' });
     return this.http.post(`${this.apiUrl}/register`, user).pipe(
       tap((response: any) => {
-        // Don't automatically log in after registration
-        // Just navigate to login page
+        console.log('Registration successful:', response);
         this.router.navigate(['/login']);
       }),
-      catchError(this.handleError)
+      catchError(error => {
+        console.error('Registration error:', error);
+        return this.handleError(error);
+      })
     );
   }
 
   login(credentials: {email: string, password: string}): Observable<any> {
+    console.log('Attempting login with:', { ...credentials, password: '***' });
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: any) => {
+        console.log('Login successful:', response);
         if (response.token) {
           localStorage.setItem(this.tokenKey, response.token);
           localStorage.setItem('user', JSON.stringify(response.user));
@@ -55,7 +60,10 @@ export class AuthService {
           this.router.navigate(['/program-chairs']);
         }
       }),
-      catchError(this.handleError)
+      catchError(error => {
+        console.error('Login error:', error);
+        return this.handleError(error);
+      })
     );
   }
 
@@ -97,8 +105,12 @@ export class AuthService {
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An error occurred';
+    console.error('API Error:', error);
+
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
+    } else if (error.status === 0) {
+      errorMessage = 'Cannot connect to the server. Please try again later.';
     } else {
       switch (error.status) {
         case 401:
@@ -113,8 +125,11 @@ export class AuthService {
         case 422:
           errorMessage = 'Invalid input data';
           break;
+        case 500:
+          errorMessage = 'Server error. Please try again later.';
+          break;
         default:
-          errorMessage = 'Server error, please try again later';
+          errorMessage = 'An unexpected error occurred. Please try again.';
       }
     }
     return throwError(() => errorMessage);

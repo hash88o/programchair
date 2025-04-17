@@ -494,21 +494,29 @@ export class HeaderComponent {
     private router: Router,
     private elementRef: ElementRef
   ) {
-    this.updateUserName();
-    this.authService.authStateChanged.subscribe(() => {
+    if (this.authService.isAuthenticated()) {
       this.updateUserName();
+    }
+    
+    this.authService.authStateChanged.subscribe(() => {
+      if (this.authService.isAuthenticated()) {
+        this.updateUserName();
+      } else {
+        this.userName = '';
+      }
     });
   }
 
   private updateUserName() {
-    if (window.location.pathname.includes('/register')) {
+    const currentPath = window.location.pathname;
+    if (currentPath === '/login' || currentPath === '/register') {
       this.userName = '';
       return;
     }
 
     this.authService.getCurrentUserInfo().subscribe(
       user => {
-        this.userName = user ? user.name : '';
+        this.userName = user?.name || '';
       },
       error => {
         console.error('Error fetching user info:', error);
