@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ProgramChair } from '../models/program-chair.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProgramChairService {
-  private apiUrl = '/api';
+  private apiUrl = `${environment.apiUrl}/api`;
   private programChairsSubject = new BehaviorSubject<ProgramChair[]>([]);
 
   constructor(private http: HttpClient) {
@@ -17,7 +18,7 @@ export class ProgramChairService {
   }
 
   loadProgramChairs(): void {
-    this.http.get<ProgramChair[]>(`${this.apiUrl}`).subscribe({
+    this.http.get<ProgramChair[]>(`${this.apiUrl}/program-chairs`).subscribe({
       next: (chairs) => {
         this.programChairsSubject.next(chairs);
       },
@@ -33,7 +34,7 @@ export class ProgramChairService {
   }
 
   getProgramChairById(id: number): Observable<ProgramChair> {
-    return this.http.get<ProgramChair>(`${this.apiUrl}/${id}`);
+    return this.http.get<ProgramChair>(`${this.apiUrl}/program-chair/${id}`);
   }
 
   createProgramChair(chair: Omit<ProgramChair, 'chair_id'>): Observable<ProgramChair> {
@@ -46,8 +47,7 @@ export class ProgramChairService {
   }
 
   updateProgramChair(id: number, chair: Partial<ProgramChair>): Observable<ProgramChair> {
-    // Fixed the endpoint to match backend
-    return this.http.put<ProgramChair>(`${this.apiUrl}/${id}`, chair).pipe(
+    return this.http.put<ProgramChair>(`${this.apiUrl}/program-chair/${id}`, chair).pipe(
       tap((updatedChair) => {
         const currentChairs = this.programChairsSubject.value;
         const index = currentChairs.findIndex(c => c.chair_id === id);
@@ -60,7 +60,7 @@ export class ProgramChairService {
   }
 
   deleteProgramChair(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' }).pipe(
+    return this.http.delete(`${this.apiUrl}/program-chair/${id}`).pipe(
       tap(() => {
         const currentChairs = this.programChairsSubject.value;
         this.programChairsSubject.next(

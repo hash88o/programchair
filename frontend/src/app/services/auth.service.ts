@@ -3,12 +3,13 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_BASE = '/api/auth';
+  private apiUrl = `${environment.apiUrl}/api/auth`;
   private authStateSubject = new BehaviorSubject<boolean>(false);
   private currentUserSubject = new BehaviorSubject<any>(null);
   private tokenKey = 'auth_token';
@@ -29,7 +30,7 @@ export class AuthService {
   }
 
   register(user: any): Observable<any> {
-    return this.http.post(`${this.API_BASE}/register`, user).pipe(
+    return this.http.post(`${this.apiUrl}/register`, user).pipe(
       tap(() => {
         this.router.navigate(['/login']);
       })
@@ -37,7 +38,7 @@ export class AuthService {
   }
 
   login(credentials: {email: string, password: string}): Observable<any> {
-    return this.http.post(`${this.API_BASE}/login`, credentials).pipe(
+    return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: any) => {
         localStorage.setItem(this.tokenKey, response.token);
         localStorage.setItem('user', JSON.stringify(response.user));
