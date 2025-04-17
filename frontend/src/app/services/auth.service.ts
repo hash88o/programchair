@@ -26,25 +26,26 @@ export class AuthService {
     const token = localStorage.getItem(this.tokenKey);
     if (token) {
       this.authStateSubject.next(true);
+      // Try to get user info if token exists
+      this.getCurrentUserInfo().subscribe();
     }
   }
 
   register(user: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, user).pipe(
-      tap(() => {
-        this.router.navigate(['/login']);
-      })
+      catchError(this.handleError)
     );
   }
 
   login(credentials: {email: string, password: string}): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: any) => {
-        localStorage.setItem(this.tokenKey, response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        this.authStateSubject.next(true);
-        this.currentUserSubject.next(response.user);
-        this.router.navigate(['/program-chairs']);
+        if (response.token) {
+          localStorage.setItem(this.tokenKey, response.token);
+          localStorage.setItem('user', JSON.stringify(response.user));
+          this.authStateSubject.next(true);
+          this.currentUserSubject.next(response.user);
+        }
       }),
       catchError(this.handleError)
     );
@@ -58,13 +59,20 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem(this.tokenKey);
+  getCurrentUserInfo(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user`).pipe(
+      tap((user: any) => {
+        this.currentUserSubject.next(user);
+      }),
+      catchError(error => {
+        this.logout();
+        return throwError(() => error);
+      })
+    );
   }
 
-  getCurrentUser(): any {
-    const userData = localStorage.getItem('user');
-    return userData ? JSON.parse(userData) : null;
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem(this.tokenKey);
   }
 
   getToken(): string | null {

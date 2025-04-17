@@ -5,6 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+ENV API_URL=https://programchair-backend.onrender.com
 RUN npm run build
 
 # Stage 2: Serve

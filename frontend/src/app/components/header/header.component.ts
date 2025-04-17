@@ -501,8 +501,15 @@ export class HeaderComponent {
   }
 
   private updateUserName() {
-    const user = this.authService.getCurrentUser();
-    this.userName = user ? user.name : '';
+    this.authService.getCurrentUserInfo().subscribe(
+      user => {
+        this.userName = user ? user.name : '';
+      },
+      error => {
+        console.error('Error fetching user info:', error);
+        this.userName = '';
+      }
+    );
   }
 
   @HostListener('window:scroll')

@@ -1,0 +1,26 @@
+<nav class="navbar" [ngClass]="{ scrolled: isScrolled }">
+  <h1>
+    <a routerLink="/"> <i class="fas fa-code"></i> ProgramChair </a>
+  </h1>
+  <ul>
+    <li *ngIf="!authService.isAuthenticated()">
+      <a routerLink="/register">Register</a>
+    </li>
+    <li *ngIf="!authService.isAuthenticated()">
+      <a routerLink="/login">Login</a>
+    </li>
+    <li *ngIf="authService.isAuthenticated()">
+      <a routerLink="/program-chairs">Program Chairs</a>
+    </li>
+    <li *ngIf="authService.isAuthenticated()" class="dropdown">
+      <button class="dropdown-toggle" (click)="toggleDropdown($event)">
+        {{ currentUser?.name || "User" }}
+      </button>
+      <div class="dropdown-menu" [class.show]="isDropdownOpen">
+        <a routerLink="/profile">Profile</a>
+        <a routerLink="/settings">Settings</a>
+        <a href="#" (click)="logout(); $event.preventDefault()">Logout</a>
+      </div>
+    </li>
+  </ul>
+</nav>
