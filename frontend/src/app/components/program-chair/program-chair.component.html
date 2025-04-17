@@ -1,0 +1,152 @@
+<div class="chair-container">
+  <div class="chair-background">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <div class="chair-card" [@fadeIn]>
+    <div class="chair-header">
+      <div class="brand-logo">
+        <i class="fas fa-user-tie"></i>
+      </div>
+      <h2>{{ isEditMode ? "Edit" : "Add New" }} Program Chair</h2>
+      <p class="subtitle">
+        {{
+          isEditMode ? "Update the details below" : "Fill in the details below"
+        }}
+      </p>
+    </div>
+
+    <form [formGroup]="chairForm" (ngSubmit)="onSubmit()">
+      <div class="form-group" [class.focused]="focusedField === 'name'">
+        <label for="name">
+          <i class="fas fa-user"></i>
+          Name
+        </label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          (focus)="focusedField = 'name'"
+          (blur)="focusedField = ''"
+          placeholder="Enter full name"
+        />
+        <div
+          class="validation-message"
+          *ngIf="chairForm.get('name')?.errors?.['required'] && chairForm.get('name')?.touched"
+        >
+          Name is required
+        </div>
+      </div>
+
+      <div class="form-group" [class.focused]="focusedField === 'email'">
+        <label for="email">
+          <i class="fas fa-envelope"></i>
+          Email
+        </label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email_id"
+          (focus)="focusedField = 'email'"
+          (blur)="focusedField = ''"
+          placeholder="Enter email address"
+        />
+        <div
+          class="validation-message"
+          *ngIf="chairForm.get('email_id')?.errors?.['required'] && chairForm.get('email_id')?.touched"
+        >
+          Email is required
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div
+          class="form-group"
+          [class.focused]="focusedField === 'affiliation'"
+        >
+          <label for="affiliation">
+            <i class="fas fa-building"></i>
+            Affiliation
+          </label>
+          <input
+            type="text"
+            id="affiliation"
+            formControlName="affiliation"
+            (focus)="focusedField = 'affiliation'"
+            (blur)="focusedField = ''"
+            placeholder="Enter institution name"
+          />
+        </div>
+
+        <div class="form-group" [class.focused]="focusedField === 'expertise'">
+          <label for="expertise">
+            <i class="fas fa-brain"></i>
+            Expertise
+          </label>
+          <input
+            type="text"
+            id="expertise"
+            formControlName="expertise_area"
+            (focus)="focusedField = 'expertise'"
+            (blur)="focusedField = ''"
+            placeholder="Enter area of expertise"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" [class.focused]="focusedField === 'phone'">
+          <label for="phone">
+            <i class="fas fa-phone"></i>
+            Phone
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            formControlName="phone_no"
+            (focus)="focusedField = 'phone'"
+            (blur)="focusedField = ''"
+            placeholder="Enter phone number"
+          />
+        </div>
+
+        <div class="form-group" [class.focused]="focusedField === 'conference'">
+          <label for="conference">
+            <i class="fas fa-calendar-alt"></i>
+            Conference ID
+          </label>
+          <input
+            type="number"
+            id="conference"
+            formControlName="conference_id"
+            (focus)="focusedField = 'conference'"
+            (blur)="focusedField = ''"
+            placeholder="Enter conference ID"
+          />
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="chairForm.invalid || isSubmitting"
+        >
+          <i
+            class="fas"
+            [ngClass]="isEditMode ? 'fa-save' : 'fa-plus-circle'"
+          ></i>
+          {{
+            isSubmitting ? "Processing..." : isEditMode ? "Update" : "Create"
+          }}
+        </button>
+        <button type="button" class="btn-cancel" (click)="onCancel()">
+          <i class="fas fa-times"></i>
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

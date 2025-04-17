@@ -1,0 +1,16 @@
+<app-header [applicationName]="applicationName"></app-header>
+<!-- <app-landing></app-landing> -->
+<div class="app-container">
+  <nav class="navbar">
+    <div class="nav-brand">Program Chair Management</div>
+    <ul class="nav-links">
+      <li>
+        <a routerLink="/program-chair" routerLinkActive="active"
+          >Program Chairs</a
+        >
+      </li>
+    </ul>
+  </nav>
+  <router-outlet></router-outlet>
+</div>
+<app-layout [footerName]="footerName"></app-layout>
