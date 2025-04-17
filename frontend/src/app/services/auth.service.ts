@@ -26,13 +26,20 @@ export class AuthService {
     const token = localStorage.getItem(this.tokenKey);
     if (token) {
       this.authStateSubject.next(true);
-      // Try to get user info if token exists
-      this.getCurrentUserInfo().subscribe();
+      // Only try to get user info if we're not on the register page
+      if (!window.location.pathname.includes('/register')) {
+        this.getCurrentUserInfo().subscribe();
+      }
     }
   }
 
   register(user: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, user).pipe(
+      tap((response: any) => {
+        // Don't automatically log in after registration
+        // Just navigate to login page
+        this.router.navigate(['/login']);
+      }),
       catchError(this.handleError)
     );
   }
@@ -45,6 +52,7 @@ export class AuthService {
           localStorage.setItem('user', JSON.stringify(response.user));
           this.authStateSubject.next(true);
           this.currentUserSubject.next(response.user);
+          this.router.navigate(['/program-chairs']);
         }
       }),
       catchError(this.handleError)
@@ -65,13 +73,21 @@ export class AuthService {
         this.currentUserSubject.next(user);
       }),
       catchError(error => {
-        this.logout();
+        // Only logout if we're not on register or login page
+        if (!window.location.pathname.includes('/register') && 
+            !window.location.pathname.includes('/login')) {
+          this.logout();
+        }
         return throwError(() => error);
       })
     );
   }
 
   isAuthenticated(): boolean {
+    // Don't check authentication on register page
+    if (window.location.pathname.includes('/register')) {
+      return false;
+    }
     return !!localStorage.getItem(this.tokenKey);
   }
 

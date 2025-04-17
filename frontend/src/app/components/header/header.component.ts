@@ -501,6 +501,11 @@ export class HeaderComponent {
   }
 
   private updateUserName() {
+    if (window.location.pathname.includes('/register')) {
+      this.userName = '';
+      return;
+    }
+
     this.authService.getCurrentUserInfo().subscribe(
       user => {
         this.userName = user ? user.name : '';
