@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: programchair-backend
+    env: docker
+    buildCommand: docker build -t programchair-backend .
+    startCommand: docker run -p $PORT:8080 programchair-backend
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://dpg-d009hoc9c44c73ffgja0-a.oregon-postgres.render.com:5432/programchairdb
+      - key: SPRING_DATASOURCE_USERNAME
+        value: programchairdb_user
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: 2uaTUEnYY9qqGxlcVHRCbI00TGE1T7bv
+      - key: PORT
+        value: 8080

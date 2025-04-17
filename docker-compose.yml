@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://dpg-d009hoc9c44c73ffgja0-a.oregon-postgres.render.com:5432/programchairdb
+      - DB_USERNAME=programchairdb_user
+      - DB_PASSWORD=2uaTUEnYY9qqGxlcVHRCbI00TGE1T7bv
+      - PORT=8080 
